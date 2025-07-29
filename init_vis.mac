@@ -1,0 +1,43 @@
+
+# ── Geant4 の初期化 ─────────────────────────
+/run/initialize
+
+# ── Qt/OpenGL ビューアを作成 ────────────────
+/vis/open                # デフォルトドライバ
+# （例: /vis/open TSG_QT_GLES）
+
+# ── ジオメトリを描画 ───────────────────────
+/vis/drawVolume
+/vis/scene/add/volume
+
+# ── イベントを積算 ─────────────────────────
+/vis/scene/endOfEventAction accumulate 0   # 0＝無制限で保持  [oai_citation:0‡geant4.web.cern.ch](https://geant4.web.cern.ch/documentation/dev/bfad_html/ForApplicationDevelopers/Visualization/filtering.html?utm_source=chatgpt.com)
+/vis/viewer/set/autoRefresh false         # 自動更新オフ
+
+# ── 電子だけを描画するフィルタを作成 ───────
+#/vis/filtering/trajectories/create/particleFilter    # フィルタ作成  [oai_citation:1‡indico.cern.ch](https://indico.cern.ch/event/776050/contributions/3241819/attachments/1789268/2914264/Visualization2-2.pdf?utm_source=chatgpt.com)
+#/vis/filtering/trajectories/particleFilter-0/add e-  # 電子だけ
+#/vis/filtering/trajectories/particleFilter-0/invert false
+#/vis/filtering/trajectories/particleFilter-0/verbose false
+#/vis/filtering/trajectories/particleFilter-0/active true
+						    
+# ── Pz（z成分の運動量）でフィルタを作成 ─────────────────
+#/vis/filtering/trajectories/create/attributeFilter/
+#/vis/filtering/trajectories/attributeFilter-0/setAttribute Imag
+#/vis/filtering/trajectories/attributeFilter-0/addInterval 2.5 eV 1000 MeV
+
+# ── 軌跡を電荷で色分けして描画 ───────────────
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/create/drawByParticleID opticalphoton
+
+# ── シーンに軌跡を追加 ───────────────────────
+/vis/scene/add/trajectories
+
+# ── カメラ設定 ────────────────────────────
+/vis/viewer/set/viewpointThetaPhi   90   -90 deg
+/vis/viewer/set/upVector            1    0    0
+/vis/viewer/set/targetPoint         0    0    -40  mm
+/vis/viewer/zoom                    1.
+
+# ── 最初の表示 ────────────────────────────
+/vis/viewer/flush
